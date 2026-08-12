@@ -34,7 +34,9 @@ jobs:
         run: ln -sf /mingw64 /mingw
 
       - name: Configure
-        run: CXXFLAGS=-std=gnu++0x ./configure --enable-static
+        run: |
+          export WINVER_FLAGS="-D_WIN32_WINNT=0x0501 -DWINVER=0x0501 -DNTDDI_VERSION=0x05010000"
+          CFLAGS="$WINVER_FLAGS" CXXFLAGS="-std=gnu++0x $WINVER_FLAGS" ./configure --enable-static
 
       - name: Build
         run: make -j$(nproc)
