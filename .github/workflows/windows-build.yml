@@ -29,6 +29,9 @@ jobs:
             mingw-w64-x86_64-libpng
             mingw-w64-x86_64-freetype
 
+      - name: Compat symlink for legacy MSYS1-style library paths
+        run: ln -sf /mingw64 /mingw
+
       - name: Configure
         run: ./configure --enable-static
 
