@@ -34,7 +34,7 @@ jobs:
         run: ln -sf /mingw64 /mingw
 
       - name: Configure
-        run: ./configure --enable-static
+        run: CXXFLAGS=-std=gnu++0x ./configure --enable-static
 
       - name: Build
         run: make -j$(nproc)
