@@ -1,0 +1,45 @@
+name: Windows build (OpenTTD 1.5.3)
+
+on:
+  push:
+    branches: [original-ottd-1.5.3]
+  workflow_dispatch:
+
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up MSYS2 (MinGW-w64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            base-devel
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-xz
+            mingw-w64-x86_64-libpng
+            mingw-w64-x86_64-freetype
+
+      - name: Configure
+        run: ./configure --enable-static
+
+      - name: Build
+        run: make -j$(nproc)
+
+      - name: Locate binary
+        run: find bin -maxdepth 1 -name 'openttd.exe'
+
+      - name: Upload openttd.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: openttd-1.5.3-windows
+          path: bin/openttd.exe
